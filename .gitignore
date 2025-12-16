@@ -1,0 +1,24 @@
+# Build directories
+build
+build/
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+
+# C build artifacts
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.out
+*.exe
+*.dll
+*.lib
+
+# IDE
+.idea

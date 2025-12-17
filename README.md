@@ -42,4 +42,42 @@ Let's say we have "5+3", my first thought was to push(5), push(+), push(3) but t
 We should get the numbers first then the operands, we should something like this push(5), push(3), push(+), because stacks are last-in first out.
 So we will pop() and we will get the operand, in this case +, so we know that the other two elements from the stack we would do an addition.
 In the case we have a longer operation such as "5 + (2-1) + 7" we will have "5 2 1 - + 7 + "
-We gonna use the reverse polish notation.
+
+How we gonna do it:
+We gonna use the reverse polist notation and the shunting yard algorithm.
+
+1. Shunting Yard Algorithm
+   This is a two-phase approach: first convert infix to RPN, then evaluate the RPN.
+   Phase 1: Infix to RPN Conversion
+   You use TWO data structures:
+
+An output queue (or list) for the final RPN expression
+An operator stack for temporarily holding operators and parentheses
+
+The algorithm:
+
+Read tokens (numbers, operators, parentheses) left to right
+If number: add it directly to output queue
+If operator:
+
+While there's an operator on top of the stack with higher or equal precedence, pop it to output
+Then push your current operator onto the stack
+
+
+If left parenthesis '(': push it onto the stack
+If right parenthesis ')':
+
+Pop operators to output until you find the matching '('
+Discard both parentheses
+
+
+At the end: pop all remaining operators to output
+
+Example: "5 + (2 - 1) * 7"
+TokenStackOutput Queue5[][5]+[+][5]([+, (][5]2[+, (][5, 2]-[+, (, -][5, 2]1[+, (, -][5, 2, 1])[+][5, 2, 1, -]*[+, *][5, 2, 1, -]7[+, *][5, 2, 1, -, 7]END[][5, 2, 1, -, 7, *, +]
+Phase 2: Evaluate RPN
+
+Use a single stack
+Read RPN left to right
+Number? Push it
+Operator? Pop two numbers, calculate, push result

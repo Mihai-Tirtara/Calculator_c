@@ -25,11 +25,11 @@ Program Structure:
 
 - Method to display welcome message and instructions
 - while main loop that run until the user press q and q is the only element in the input.
-- Method to parse the input and put it on the stack
-- Method to parse the digits from string to integer looping through an array of characters and returning the int
-- Method to do the calculation
+- Method to parse the input and return a char[] with the expression in infix
+- Method to conversion from infix to postfix
+- Method to do the postfix evaluation and return the result.
 
-Eror that could happen:
+Error that could happen:
 IF the user inputs the letter q inside an operation could that trigger the program to exit?
 
 Questions to consider:

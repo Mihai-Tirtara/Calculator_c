@@ -1,83 +1,101 @@
-How to create a calculator
+# Simple Calculator in C
 
-Creating a simple calculator can be done using various programming languages. Below is an example of how to create a basic calculator using C.
+A terminal-based calculator implementation in C that supports basic arithmetic operations with proper order of operations using parentheses.
 
-General Requirements:
-It should be a terminal based application that can perform addition, subtraction, multiplication, and division.
-The user wil type the operation, press enter and get the result
-The computer will return then result and wait for the next operation
-The use can type "q" to exit the program
+## Features
 
-Supported operations:
-1. Addition (+)
-2. Subtraction (-)
-3. Multiplication (*)
-4. Division (/)
-   Parentheses can be used for operations order.
+### Supported Operations
+- **Addition** (+)
+- **Subtraction** (-)
+- **Multiplication** (*)
+- **Division** (/)
+- **Parentheses** for operation precedence
 
-Error  handling:
-1. Division by zero should be handled gracefully with an error message.
-2. Letters instead of numbers should be handled with and error message.
-3. Only use whole numbers no floats.
+### User Interface
+- Terminal-based interactive application
+- User types an operation and presses enter to get the result
+- Program continuously accepts new operations until exit
+- Type `q` to exit the program
 
+### Error Handling
+1. Division by zero is handled gracefully with an error message
+2. Invalid input (letters instead of numbers) displays an error message
+3. Only whole numbers are supported (no floats)
 
-Program Structure:
+## How It Works
 
-- Method to display welcome message and instructions
-- while main loop that run until the user press q and q is the only element in the input.
-- Method to parse the input and return a char[] with the expression in infix
-- Method to conversion from infix to postfix
-- Method to do the postfix evaluation and return the result.
+This calculator uses **Reverse Polish Notation (RPN)** and the **Shunting Yard Algorithm** to evaluate expressions.
 
-Error that could happen:
-IF the user inputs the letter q inside an operation could that trigger the program to exit?
+### The Shunting Yard Algorithm
 
-Questions to consider:
-How do we parse the user input ? is everything they send an array of characters ?
-What do we do when they have a 10 digits number ? I guess the easiest way is to parse the input as a string and then go through each digit and at the end return the int
-What do we do with the operators ?
-I know we should use a stack but I'm not entirely certain how.
-Okay, I think I figured out, I've been looking at the stack from a wrong perspective, we shouldn't put stuff on the stack in this order:
-Let's say we have "5+3", my first thought was to push(5), push(+), push(3) but that wouldn't work.
-We should get the numbers first then the operands, we should something like this push(5), push(3), push(+), because stacks are last-in first out.
-So we will pop() and we will get the operand, in this case +, so we know that the other two elements from the stack we would do an addition.
-In the case we have a longer operation such as "5 + (2-1) + 7" we will have "5 2 1 - + 7 + "
+The algorithm works in two phases:
 
-How we gonna do it:
-We gonna use the reverse polist notation and the shunting yard algorithm.
+#### Phase 1: Infix to RPN Conversion
 
-1. Shunting Yard Algorithm
-   This is a two-phase approach: first convert infix to RPN, then evaluate the RPN.
-   Phase 1: Infix to RPN Conversion
-   You use TWO data structures:
+Uses two data structures:
+- **Output queue** (or list) for the final RPN expression
+- **Operator stack** for temporarily holding operators and parentheses
 
-An output queue (or list) for the final RPN expression
-An operator stack for temporarily holding operators and parentheses
+**Algorithm steps:**
+1. Read tokens (numbers, operators, parentheses) left to right
+2. **If number:** add it directly to output queue
+3. **If operator:**
+   - While there's an operator on top of the stack with higher or equal precedence, pop it to output
+   - Then push your current operator onto the stack
+4. **If left parenthesis `(`:** push it onto the stack
+5. **If right parenthesis `)`:**
+   - Pop operators to output until you find the matching `(`
+   - Discard both parentheses
+6. **At the end:** pop all remaining operators to output
 
-The algorithm:
+**Example:** `5 + (2 - 1) * 7`
 
-Read tokens (numbers, operators, parentheses) left to right
-If number: add it directly to output queue
-If operator:
+| Token | Stack      | Output Queue           |
+|-------|------------|------------------------|
+| 5     | []         | [5]                    |
+| +     | [+]        | [5]                    |
+| (     | [+, (]     | [5]                    |
+| 2     | [+, (]     | [5, 2]                 |
+| -     | [+, (, -]  | [5, 2]                 |
+| 1     | [+, (, -]  | [5, 2, 1]              |
+| )     | [+]        | [5, 2, 1, -]           |
+| *     | [+, *]     | [5, 2, 1, -]           |
+| 7     | [+, *]     | [5, 2, 1, -, 7]        |
+| END   | []         | [5, 2, 1, -, 7, *, +]  |
 
-While there's an operator on top of the stack with higher or equal precedence, pop it to output
-Then push your current operator onto the stack
+#### Phase 2: Evaluate RPN
 
+Uses a single stack:
+1. Read RPN left to right
+2. **Number?** Push it onto the stack
+3. **Operator?** Pop two numbers, calculate, push result back
 
-If left parenthesis '(': push it onto the stack
-If right parenthesis ')':
+## Program Structure
 
-Pop operators to output until you find the matching '('
-Discard both parentheses
+- [x] Display welcome message and instructions
+- [ ] Main while loop that runs until user enters `q` as the only input
+- [ ] Method to parse input and return expression in infix notation
+- [ ] Method to convert from infix to postfix (RPN)
+- [ ] Method to evaluate postfix expression and return result
 
+## Development Notes
 
-At the end: pop all remaining operators to output
+### Design Decisions
 
-Example: "5 + (2 - 1) * 7"
-TokenStackOutput Queue5[][5]+[+][5]([+, (][5]2[+, (][5, 2]-[+, (, -][5, 2]1[+, (, -][5, 2, 1])[+][5, 2, 1, -]*[+, *][5, 2, 1, -]7[+, *][5, 2, 1, -, 7]END[][5, 2, 1, -, 7, *, +]
-Phase 2: Evaluate RPN
+**Input Parsing:**
+- User input is treated as an array of characters
+- Multi-digit numbers are parsed by iterating through consecutive digits and converting to an integer
+- Operators are identified and handled separately
 
-Use a single stack
-Read RPN left to right
-Number? Push it
-Operator? Pop two numbers, calculate, push result
+**Stack Usage:**
+The key insight is understanding how stacks work with RPN:
+- For `5+3`, we don't push in order: `push(5), push(+), push(3)`
+- Instead, we convert to RPN first: `5 3 +`
+- Then evaluate: `push(5), push(3), push(+)` where `+` triggers popping two operands and pushing the result
+- For `5 + (2-1) + 7`, the RPN is: `5 2 1 - + 7 +`
+
+### Known Considerations
+
+**Potential Edge Cases:**
+- What happens if the user inputs `q` inside an operation? (e.g., `5+q`)
+  - Should only exit when `q` is the sole input element

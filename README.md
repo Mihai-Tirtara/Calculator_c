@@ -73,7 +73,7 @@ Uses a single stack:
 ## Program Structure
 
 - [x] Display welcome message and instructions
-- [ ] Main while loop that runs until user enters `q` as the only input
+- [x] Main while loop that runs until user enters `q` as the only input
 - [ ] Method to parse input and return expression in infix notation
 - [ ] Method to convert from infix to postfix (RPN)
 - [ ] Method to evaluate postfix expression and return result

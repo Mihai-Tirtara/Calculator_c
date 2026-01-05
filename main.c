@@ -1,9 +1,11 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include "stack.h"
+#include "queue.h"
 
-char* parse_input(const char* input);
 char* infix_to_postfix(const char* infix);
-char evaluate_postfix(const char* postfix);
+int  evaluate_postfix(const char* postfix);
+
 
 const char* welcome_message =
     "Welcome to a Simple Calculator\n"
@@ -14,16 +16,16 @@ const char* welcome_message =
     "  -  (subtraction)\n"
     "  *  (multiplication)\n"
     "  /  (division)\n\n"
-    "To exit the program, type 'q'\n";
+    "To exit the program, type 'q'\n"; 
+
+
 
 int main(void) {
     printf("%s", welcome_message);
-    char* input;
-    char exit;
-    char* infix;
     char* postfix;
     int result;
-    char buff[1024];
+    char buff[MAX];
+
     while (1) {
    printf("Enter calculation (or 'q' to quit): ");
 
@@ -36,29 +38,23 @@ int main(void) {
     }
 
     else {
-        infix = parse_input(buff);
-        postfix = infix_to_postfix(infix);
-        result = evaluate_postfix(postfix);
-        return result;
+         postfix = infix_to_postfix(buff);
+        //result = evaluate_postfix(postfix);
+        //return result;
+        printf("This the expression in postfix %s \n", postfix);
     }
-
-    printf("You entered: %s", buff);
 
     return 0;
  }
 }
 
-char* parse_input(const char* input) {
-    // Placeholder for input parsing logic
-    return NULL;
-}
 
 char* infix_to_postfix(const char* infix) {
     // Placeholder for infix to postfix conversion logic
     return NULL;
 }
 
-char evaluate_postfix(const char* postfix) {
+int evaluate_postfix(const char* postfix) {
     // Placeholder for postfix evaluation logic
     return 0;
 }

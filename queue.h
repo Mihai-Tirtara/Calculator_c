@@ -17,5 +17,6 @@ bool queue_is_full(Queue* q);
 void queue_enque(Queue* q, char c);
 char queue_deque(Queue* q);
 char queue_peek(Queue* q);
+char* queue_to_string(Queue* q);
 
-#endif
+#endif 

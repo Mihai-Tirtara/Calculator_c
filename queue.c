@@ -45,8 +45,7 @@ char* queue_to_string(Queue* q) {
     static char buffer[MAX * 2 + 3];
     int pos = 0;
 
-    buffer[pos++] = '[';
-
+ 
     for (int i = q->head; i < q->tail; i++) {
         if (i > q->head) {
             buffer[pos++] = ' ';
@@ -54,7 +53,6 @@ char* queue_to_string(Queue* q) {
         buffer[pos++] = q->queue[i];
     }
 
-    buffer[pos++] = ']';
     buffer[pos] = '\0';
 
     return buffer;

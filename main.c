@@ -1,9 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "stack.h"
+#include "int_stack.h"
 #include "queue.h"
 
 char* infix_to_postfix(const char* infix);
+int calculate_expression(int operand1, int operand2, char operator);
 int  evaluate_postfix(const char* postfix);
 
 
@@ -23,7 +25,7 @@ const char* welcome_message =
 int main(void) {
     printf("%s", welcome_message);
     char* postfix;
-    //int result;
+    int result;
     char buff[MAX];
 
     while (1) {
@@ -38,16 +40,35 @@ int main(void) {
     }
 
     else {
-         postfix = infix_to_postfix(buff);
-        //result = evaluate_postfix(postfix);
-        //return result;
-        printf("This the expression in postfix %s \n", postfix);
+        postfix = infix_to_postfix(buff);
+        result = evaluate_postfix(postfix);
+        printf("Result:%d\n",result);
     }
-
-    return 0;
  }
+    return 0;
 }
 
+int calculate_expression(int operand1, int operand2, char operator) {
+    int result = 0;
+    switch (operator) {
+        case '+':
+            result = operand1 + operand2;
+            break;
+        case '-':
+            result = operand1 - operand2;
+            break;
+        case '*':
+            result = operand1 * operand2;
+            break;
+        case '/':
+            result = operand1 / operand2;
+            break;
+        default:
+            printf("Unknown operator: %c\n", operator);
+            exit(EXIT_FAILURE);
+    }
+    return result;
+}
 
 char* infix_to_postfix(const char* infix) {
     Stack op_stack;
@@ -109,14 +130,37 @@ char* infix_to_postfix(const char* infix) {
             }
         }
     }
+    if(!stack_is_empty(&op_stack)) {
+        while(!stack_is_empty(&op_stack)) {
+            queue_enque(&output_queue, stack_pop(&op_stack));
+        }
+    }
 
 
     return queue_to_string(&output_queue);
 }
 
 int evaluate_postfix(const char* postfix) {
-    // Placeholder for postfix evaluation logic
-    return 0;
+    IntStack eval_stack;
+    int_stack_init(&eval_stack);
+    int operand1, operand2;
+    int expression_result = 0;
+    for (int i = 0; postfix[i]!= '\0';i++) {
+        if (postfix[i] == ' ' || postfix[i] == '\n') {
+            continue;
+        }
+        if(postfix[i] >= '0' && postfix[i] <= '9') {
+            int_stack_push(&eval_stack, postfix[i] - '0');
+        }
+        else {
+            operand2 = int_stack_pop(&eval_stack);
+            operand1 = int_stack_pop(&eval_stack);
+            expression_result = calculate_expression(operand1, operand2, postfix[i]);
+            int_stack_push(&eval_stack, expression_result);
+        }
+
+    }
+    return int_stack_pop(&eval_stack);
 }
 
 
